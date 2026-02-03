@@ -2,11 +2,18 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
+import { useCartStore } from '@/store/cartStore';
 
 function SuccessContent() {
   const searchParams = useSearchParams();
-  const orderNumber = searchParams.get('order') || 'UNKNOWN';
+  const orderNumber = searchParams.get('order') || searchParams.get('orderId') || 'UNKNOWN';
+  const { clearCart } = useCartStore();
+
+  // Clear cart when payment is successful
+  useEffect(() => {
+    clearCart();
+  }, [clearCart]);
 
   return (
     <div style={{ background: '#f8f9fa', minHeight: '100vh', paddingTop: '80px', paddingBottom: '80px' }}>

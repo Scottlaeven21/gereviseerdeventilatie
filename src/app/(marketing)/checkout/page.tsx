@@ -78,20 +78,81 @@ export default function CheckoutPage() {
     
     setIsProcessing(true);
     
-    // TODO: Implement Mollie payment
-    // For now, simulate order placement
     try {
-      // Simuleer API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Calculate totals
+      const subtotal = getCartTotal();
+      const shipping = subtotal >= 25 ? 0 : 5.95;
+      const tax = (subtotal + shipping) * 0.21;
+      const total = subtotal + shipping + tax;
       
-      // Clear cart
-      clearCart();
+      // Generate order ID
+      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
       
-      // Redirect to success page
-      router.push('/checkout/success?order=TEST-' + Date.now());
-    } catch (error) {
+      // Prepare order data
+      const orderData = {
+        items: items.map(item => ({
+          productId: item.product.id,
+          name: item.product.name,
+          quantity: item.quantity,
+          price: item.product.price,
+        })),
+        customer: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+        },
+        billingAddress: {
+          street: formData.street,
+          houseNumber: formData.houseNumber,
+          postalCode: formData.postalCode,
+          city: formData.city,
+          country: formData.country,
+        },
+        shippingAddress: formData.shippingDifferent ? {
+          street: formData.shippingStreet,
+          houseNumber: formData.shippingHouseNumber,
+          postalCode: formData.shippingPostalCode,
+          city: formData.shippingCity,
+          country: formData.shippingCountry,
+        } : null,
+        paymentMethod: formData.paymentMethod,
+        orderNotes: formData.orderNotes,
+        subtotal,
+        shipping,
+        tax,
+        total,
+      };
+      
+      // Create Mollie payment
+      const response = await fetch('/api/payments/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: total,
+          orderId,
+          customerEmail: formData.email,
+          orderData,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Payment creation failed');
+      }
+      
+      const { checkoutUrl } = await response.json();
+      
+      // Don't clear cart yet - will be cleared on success page after payment
+      // This prevents redirect to home before Mollie redirect happens
+      
+      // Redirect to Mollie checkout
+      window.location.href = checkoutUrl;
+    } catch (error: any) {
       console.error('Order failed:', error);
-      alert('Er is iets misgegaan. Probeer het opnieuw.');
+      alert(error.message || 'Er is iets misgegaan. Probeer het opnieuw.');
       setIsProcessing(false);
     }
   };
