@@ -20,12 +20,12 @@ export function CartIcon() {
         background: 'none',
         border: 'none',
         cursor: 'pointer',
-        padding: '8px',
+        padding: '4px',
         color: '#54595F',
       }}
       aria-label={mounted ? `Winkelwagen (${cartCount} ${cartCount === 1 ? 'item' : 'items'})` : 'Winkelwagen'}
     >
-      <i className="fas fa-shopping-cart" style={{ fontSize: '24px' }} />
+      <i className="fas fa-shopping-cart" style={{ fontSize: '22px' }} />
       
       {/* Badge - only show after mount to prevent hydration mismatch */}
       {mounted && cartCount > 0 && (

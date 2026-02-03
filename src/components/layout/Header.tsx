@@ -215,8 +215,8 @@ export function Header() {
       {/* Mobile Header */}
       <div className="lg:hidden">
         {/* Mobile Top Bar */}
-        <div style={{ background: 'white', padding: '12px 16px', borderBottom: '1px solid #e5e7eb' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ background: 'white', padding: '12px 12px', borderBottom: '1px solid #e5e7eb' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
             {/* Hamburger Menu */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -224,9 +224,10 @@ export function Header() {
                 background: 'none',
                 border: 'none',
                 color: '#64748b',
-                fontSize: '24px',
+                fontSize: '22px',
                 cursor: 'pointer',
-                padding: '8px',
+                padding: '4px',
+                flexShrink: 0,
               }}
               aria-label="Menu"
             >
@@ -234,16 +235,18 @@ export function Header() {
             </button>
 
             {/* Logo */}
-            <Link href="/">
-              <Logo height={36} />
+            <Link href="/" style={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+              <Logo height={32} />
             </Link>
 
             {/* Right Icons */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <Link href="/account" style={{ color: '#64748b', fontSize: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+              <Link href="/account" style={{ color: '#64748b', fontSize: '20px', padding: '4px' }}>
                 <i className="fas fa-user" />
               </Link>
-              <CartIcon />
+              <div style={{ marginRight: '-4px' }}>
+                <CartIcon />
+              </div>
             </div>
           </div>
         </div>
