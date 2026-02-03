@@ -17,12 +17,15 @@ export async function POST(request: NextRequest) {
     // Get payment details from Mollie
     const payment = await getPayment(paymentId);
 
-    if (!payment.metadata?.orderId) {
+    // Type assertion for metadata
+    const metadata = payment.metadata as { orderId?: string } | null | undefined;
+    
+    if (!metadata?.orderId) {
       console.error('No orderId in payment metadata');
       return NextResponse.json({ error: 'Invalid metadata' }, { status: 400 });
     }
 
-    const orderId = payment.metadata.orderId as string;
+    const orderId = metadata.orderId;
     const status = payment.status;
 
     // Update order status in database
