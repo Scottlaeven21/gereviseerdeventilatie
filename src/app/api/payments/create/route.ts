@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
       amount: parseFloat(amount),
       description: `Order #${orderId} - Gereviseerde Ventilatie`,
       redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/checkout/success?orderId=${orderId}`,
-      webhookUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/webhooks/mollie`,
+      // Webhook temporarily disabled - will be enabled after testing
+      // webhookUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/webhooks/mollie`,
       metadata: {
         orderId,
         customerEmail,
