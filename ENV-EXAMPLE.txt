@@ -1,0 +1,23 @@
+# Kopieer dit bestand naar .env.local en vul de waarden in
+
+# Supabase (Database)
+NEXT_PUBLIC_SUPABASE_URL=your-project-url.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+
+# Mollie (Payment Gateway)
+MOLLIE_API_KEY=test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+NEXT_PUBLIC_MOLLIE_PROFILE_ID=pfl_xxxxxxxx
+
+# Email (Resend.com)
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+RESEND_FROM_EMAIL=noreply@gereviseerdeventilatie.nl
+
+# Site Configuration
+NEXT_PUBLIC_SITE_URL=https://gereviseerdeventilatie.nl
+NEXT_PUBLIC_COMPANY_NAME=Gereviseerde Ventilatie
+NEXT_PUBLIC_CONTACT_EMAIL=info@gereviseerdeventilatie.nl
+NEXT_PUBLIC_CONTACT_PHONE=+31612345678
+
+# Shipping
+NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD=25.00
+NEXT_PUBLIC_STANDARD_SHIPPING_COST=5.95
