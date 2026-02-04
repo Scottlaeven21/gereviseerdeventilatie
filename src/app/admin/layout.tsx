@@ -7,8 +7,13 @@ import { useAuth, AuthProvider } from '@/contexts/AuthContext';
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { user, profile, isAdmin, loading } = useAuth();
+  const { user, profile, isAdmin, loading, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
+  };
 
   useEffect(() => {
     // Wait for both user AND profile to load before checking
@@ -140,22 +145,46 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px' }}>
             {user.email}
           </div>
-          <Link
-            href="/"
-            style={{
-              display: 'block',
-              padding: '10px',
-              background: '#334155',
-              borderRadius: '8px',
-              textAlign: 'center',
-              color: 'white',
-              textDecoration: 'none',
-              fontSize: '14px',
-            }}
-          >
-            <i className="fas fa-arrow-left" style={{ marginRight: '8px' }} />
-            Terug naar Website
-          </Link>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <button
+              onClick={handleSignOut}
+              style={{
+                padding: '10px',
+                background: '#ef4444',
+                border: 'none',
+                borderRadius: '8px',
+                textAlign: 'center',
+                color: 'white',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'background 0.2s',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.background = '#dc2626')}
+              onMouseOut={(e) => (e.currentTarget.style.background = '#ef4444')}
+            >
+              <i className="fas fa-sign-out-alt" style={{ marginRight: '8px' }} />
+              Uitloggen
+            </button>
+
+            <Link
+              href="/"
+              style={{
+                display: 'block',
+                padding: '10px',
+                background: '#334155',
+                borderRadius: '8px',
+                textAlign: 'center',
+                color: 'white',
+                textDecoration: 'none',
+                fontSize: '14px',
+              }}
+            >
+              <i className="fas fa-arrow-left" style={{ marginRight: '8px' }} />
+              Terug naar Website
+            </Link>
+          </div>
         </div>
       </aside>
 
