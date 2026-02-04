@@ -388,6 +388,57 @@ export default function AboutPage() {
               </Link>
             </div>
           </div>
+
+          {/* Contact Footer */}
+          <div
+            style={{
+              maxWidth: '900px',
+              margin: '32px auto 0',
+              padding: '24px',
+              background: '#f8f9fa',
+              borderRadius: '12px',
+              textAlign: 'center',
+            }}
+          >
+            <p style={{ marginBottom: '16px', fontSize: '15px', color: '#64748b' }}>
+              Direct contact opnemen?
+            </p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <a
+                href="tel:+31652641106"
+                style={{
+                  display: 'inline-block',
+                  padding: '12px 24px',
+                  background: '#1266BD',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                }}
+              >
+                <i className="fas fa-phone" style={{ marginRight: '8px' }} />
+                Bel ons
+              </a>
+              <a
+                href="mailto:info@gereviseerdeventilatie.nl"
+                style={{
+                  display: 'inline-block',
+                  padding: '12px 24px',
+                  background: 'white',
+                  color: '#1266BD',
+                  border: '2px solid #1266BD',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                }}
+              >
+                <i className="fas fa-envelope" style={{ marginRight: '8px' }} />
+                E-mail ons
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -37,41 +37,70 @@ export default function ShippingPage() {
             <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', marginTop: '24px', marginBottom: '12px' }}>
               Verzendkosten
             </h3>
+            <p style={{ marginBottom: '20px' }}>
+              De verzendkosten worden berekend op basis van het product en worden duidelijk weergegeven bij het afrekenen. 
+              Elk product heeft zijn eigen verzendcategorie, afhankelijk van gewicht en afmetingen.
+            </p>
             <div
               style={{
-                background: '#61CE7015',
+                background: '#f8f9fa',
                 padding: '20px',
                 borderRadius: '12px',
                 marginBottom: '20px',
-                borderLeft: '4px solid #61CE70',
+                border: '1px solid #e5e7eb',
               }}
             >
-              <p style={{ fontSize: '17px', fontWeight: '600', color: '#1e293b', margin: 0 }}>
-                <i className="fas fa-truck-fast" style={{ color: '#61CE70', marginRight: '8px' }} />
-                Gratis verzending bij bestellingen vanaf €25,-
+              <p style={{ fontSize: '15px', fontWeight: '600', color: '#1e293b', marginBottom: '12px' }}>
+                <i className="fas fa-info-circle" style={{ color: '#1266BD', marginRight: '8px' }} />
+                Indicatie verzendkosten:
               </p>
+              <ul style={{ margin: 0, paddingLeft: '24px', fontSize: '15px', color: '#64748b' }}>
+                <li style={{ marginBottom: '6px' }}>Kleine onderdelen (filters, ventielen): vanaf €5,95</li>
+                <li style={{ marginBottom: '6px' }}>Middelgrote producten (slangen, accessoires): vanaf €8,95</li>
+                <li style={{ marginBottom: '6px' }}>Grote ventilatie-units: vanaf €15,95</li>
+              </ul>
             </div>
-            <p style={{ marginBottom: '20px' }}>
-              Voor bestellingen onder €25,- bedragen de verzendkosten €6,95.
-            </p>
 
             <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', marginTop: '24px', marginBottom: '12px' }}>
               Levertijd
             </h3>
+            <div
+              style={{
+                background: '#dbeafe',
+                padding: '20px',
+                borderRadius: '12px',
+                marginBottom: '20px',
+                borderLeft: '4px solid #1266BD',
+              }}
+            >
+              <p style={{ fontSize: '17px', fontWeight: '600', color: '#1e293b', margin: 0 }}>
+                <i className="fas fa-clock" style={{ color: '#1266BD', marginRight: '8px' }} />
+                Standaard verzonden binnen 48 uur na betaling
+              </p>
+            </div>
             <ul style={{ marginBottom: '20px', paddingLeft: '24px' }}>
               <li style={{ marginBottom: '8px' }}>
-                <strong>Nederland:</strong> 2-3 werkdagen na verzending
+                <strong>Nederland:</strong> 2-5 werkdagen na verzending
               </li>
               <li style={{ marginBottom: '8px' }}>
-                <strong>België:</strong> 3-5 werkdagen na verzending
-              </li>
-              <li style={{ marginBottom: '8px' }}>
-                <strong>Duitsland:</strong> 4-6 werkdagen na verzending
+                <strong>België:</strong> 3-5 werkdagen na verzending (op aanvraag)
               </li>
             </ul>
-            <p style={{ marginBottom: '20px' }}>
-              Bestellingen geplaatst voor 16:00 uur worden dezelfde werkdag nog verzonden.
-            </p>
+            <div
+              style={{
+                background: '#fef3c7',
+                padding: '16px',
+                borderRadius: '8px',
+                marginBottom: '20px',
+                border: '1px solid #fbbf24',
+              }}
+            >
+              <p style={{ fontSize: '14px', color: '#78350f', margin: 0 }}>
+                <i className="fas fa-exclamation-triangle" style={{ color: '#d97706', marginRight: '8px' }} />
+                <strong>Let op:</strong> Bij grotere pakketten (zoals WTW-units en mechanische ventilatoren) 
+                kan de verwerkings- en levertijd afwijken. U wordt hierover geïnformeerd bij de orderbevestiging.
+              </p>
+            </div>
 
             <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', marginTop: '24px', marginBottom: '12px' }}>
               Track & Trace

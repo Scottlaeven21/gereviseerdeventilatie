@@ -166,17 +166,58 @@ export default function LevertijdenPage() {
               Vragen over uw levering?
             </h2>
             <p style={{ marginBottom: '20px' }}>
-              Heeft u vragen over de status van uw bestelling of de levertijd? Neem gerust contact met ons op:
+              Heeft u vragen over de status van uw bestelling of de levertijd? Neem gerust contact met ons op.
             </p>
-            <div style={{ background: '#f8f9fa', padding: '20px', borderRadius: '12px' }}>
-              <p style={{ margin: '0 0 8px 0' }}>
-                <strong>Email:</strong> <a href="mailto:contact@laevenitservices.nl" style={{ color: '#1266BD' }}>contact@laevenitservices.nl</a>
+
+            <div
+              style={{
+                marginTop: '48px',
+                padding: '24px',
+                background: '#f8f9fa',
+                borderRadius: '12px',
+                textAlign: 'center',
+              }}
+            >
+              <p style={{ marginBottom: '16px', fontSize: '15px', color: '#64748b' }}>
+                Vragen over levertijden?
               </p>
-              <p style={{ margin: '0 0 8px 0' }}>
-                <strong>Telefoon:</strong> +31 6 12345678
-              </p>
-              <p style={{ margin: 0 }}>
-                <strong>Bereikbaar:</strong> Ma-Vr 09:00 - 17:00
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <a
+                  href="tel:+31652641106"
+                  style={{
+                    display: 'inline-block',
+                    padding: '12px 24px',
+                    background: '#1266BD',
+                    color: 'white',
+                    textDecoration: 'none',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    fontWeight: '600',
+                  }}
+                >
+                  <i className="fas fa-phone" style={{ marginRight: '8px' }} />
+                  Bel ons
+                </a>
+                <a
+                  href="mailto:info@gereviseerdeventilatie.nl"
+                  style={{
+                    display: 'inline-block',
+                    padding: '12px 24px',
+                    background: 'white',
+                    color: '#1266BD',
+                    border: '2px solid #1266BD',
+                    textDecoration: 'none',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    fontWeight: '600',
+                  }}
+                >
+                  <i className="fas fa-envelope" style={{ marginRight: '8px' }} />
+                  E-mail ons
+                </a>
+              </div>
+              <p style={{ marginTop: '16px', fontSize: '13px', color: '#94a3b8' }}>
+                Bereikbaar: Ma-Vr 09:00 - 17:00
               </p>
             </div>
           </div>

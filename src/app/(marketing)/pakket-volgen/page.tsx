@@ -269,42 +269,52 @@ export default function PakketVolgenPage() {
               <li style={{ marginBottom: '8px' }}>Neem contact met ons op via contact@laevenitservices.nl</li>
             </ul>
 
-            <div style={{ background: '#f8f9fa', padding: '24px', borderRadius: '12px', marginTop: '32px', textAlign: 'center' }}>
-              <p style={{ fontSize: '18px', fontWeight: '600', color: '#1e293b', marginBottom: '16px' }}>
+            <div
+              style={{
+                marginTop: '48px',
+                padding: '24px',
+                background: '#f8f9fa',
+                borderRadius: '12px',
+                textAlign: 'center',
+              }}
+            >
+              <p style={{ marginBottom: '16px', fontSize: '15px', color: '#64748b' }}>
                 Vragen over uw levering?
               </p>
-              <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <Link
-                  href="/contact"
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <a
+                  href="tel:+31652641106"
                   style={{
                     display: 'inline-block',
                     padding: '12px 24px',
                     background: '#1266BD',
                     color: 'white',
-                    borderRadius: '8px',
-                    fontWeight: '600',
                     textDecoration: 'none',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    fontWeight: '600',
                   }}
                 >
-                  <i className="fas fa-envelope" style={{ marginRight: '8px' }} />
-                  Contact
-                </Link>
-                <Link
-                  href="/account"
+                  <i className="fas fa-phone" style={{ marginRight: '8px' }} />
+                  Bel ons
+                </a>
+                <a
+                  href="mailto:info@gereviseerdeventilatie.nl"
                   style={{
                     display: 'inline-block',
                     padding: '12px 24px',
                     background: 'white',
                     color: '#1266BD',
                     border: '2px solid #1266BD',
-                    borderRadius: '8px',
-                    fontWeight: '600',
                     textDecoration: 'none',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    fontWeight: '600',
                   }}
                 >
-                  <i className="fas fa-history" style={{ marginRight: '8px' }} />
-                  Bestelhistorie
-                </Link>
+                  <i className="fas fa-envelope" style={{ marginRight: '8px' }} />
+                  E-mail ons
+                </a>
               </div>
             </div>
           </div>

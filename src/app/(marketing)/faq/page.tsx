@@ -194,50 +194,48 @@ export default function FAQPage() {
         <div
           style={{
             marginTop: '48px',
-            background: 'linear-gradient(135deg, #1266BD 0%, #29AAE3 100%)',
-            borderRadius: '16px',
-            padding: '40px',
+            padding: '24px',
+            background: '#f8f9fa',
+            borderRadius: '12px',
             textAlign: 'center',
-            color: 'white',
           }}
         >
-          <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '16px' }}>
+          <p style={{ marginBottom: '16px', fontSize: '15px', color: '#64748b' }}>
             Staat uw vraag er niet bij?
-          </h2>
-          <p style={{ fontSize: '16px', marginBottom: '24px', opacity: 0.9 }}>
-            Neem gerust contact met ons op. Wij helpen u graag verder!
           </p>
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a
-              href="/contact"
+              href="tel:+31652641106"
               style={{
                 display: 'inline-block',
-                padding: '14px 32px',
+                padding: '12px 24px',
+                background: '#1266BD',
+                color: 'white',
+                textDecoration: 'none',
+                borderRadius: '8px',
+                fontSize: '15px',
+                fontWeight: '600',
+              }}
+            >
+              <i className="fas fa-phone" style={{ marginRight: '8px' }} />
+              Bel ons
+            </a>
+            <a
+              href="mailto:info@gereviseerdeventilatie.nl"
+              style={{
+                display: 'inline-block',
+                padding: '12px 24px',
                 background: 'white',
                 color: '#1266BD',
-                borderRadius: '8px',
-                fontWeight: '600',
+                border: '2px solid #1266BD',
                 textDecoration: 'none',
+                borderRadius: '8px',
+                fontSize: '15px',
+                fontWeight: '600',
               }}
             >
               <i className="fas fa-envelope" style={{ marginRight: '8px' }} />
-              Contact Formulier
-            </a>
-            <a
-              href="mailto:contact@laevenitservices.nl"
-              style={{
-                display: 'inline-block',
-                padding: '14px 32px',
-                background: 'rgba(255,255,255,0.2)',
-                color: 'white',
-                border: '2px solid white',
-                borderRadius: '8px',
-                fontWeight: '600',
-                textDecoration: 'none',
-              }}
-            >
-              <i className="fas fa-paper-plane" style={{ marginRight: '8px' }} />
-              Email Ons
+              E-mail ons
             </a>
           </div>
         </div>
