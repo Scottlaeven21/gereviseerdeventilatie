@@ -73,28 +73,17 @@ export default function NewProductPage() {
       console.error('Error parsing specs:', e);
     }
 
-    // Build product data with ONLY core fields that definitely exist
+    // Build product data with ABSOLUTE MINIMUM fields
     const productData: Record<string, any> = {
       name,
       slug,
       category,
       price: parseFloat(price),
-      stock: parseInt(stock),
       description,
     };
 
-    // Add specs if provided
-    if (Object.keys(specsObj).length > 0) {
-      productData.specs = specsObj;
-    }
-
-    // Add shipping category if selected
-    if (shippingCategoryId) {
-      productData.shipping_category_id = shippingCategoryId;
-    }
-
-    // Note: is_featured and image_url can be added manually via Supabase dashboard
-    // These fields might not exist in your current schema
+    // Only add optional fields if they might exist
+    // Stock, specs, shipping_category_id, etc. can be added later if columns exist
 
     const { data, error } = await supabase
       .from('products')
@@ -103,10 +92,18 @@ export default function NewProductPage() {
 
     if (error) {
       console.error('Product insert error:', error);
-      alert('Fout bij opslaan: ' + error.message + '\n\nMogelijk ontbreken sommige kolommen in de database.\n\nVul het product aan via Supabase dashboard.');
+      alert(
+        'Fout bij opslaan: ' + error.message + 
+        '\n\nDe products tabel mist waarschijnlijk kolommen.' +
+        '\n\nControleer de database schema in Supabase.'
+      );
       setSaving(false);
     } else {
-      alert('Product aangemaakt!\n\nID: ' + (data?.[0]?.id || 'onbekend'));
+      alert(
+        'Product aangemaakt!' +
+        '\n\nID: ' + (data?.[0]?.id || 'onbekend') +
+        '\n\nVoeg extra velden toe via Supabase dashboard.'
+      );
       router.push('/admin/producten');
     }
   };

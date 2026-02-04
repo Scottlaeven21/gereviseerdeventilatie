@@ -96,21 +96,14 @@ export default function EditProductPage() {
       console.error('Error parsing specs:', e);
     }
 
-    // Build product data with only existing columns
+    // Build product data with ABSOLUTE MINIMUM fields
     const productData: Record<string, any> = {
       name,
       slug,
       category,
       price: parseFloat(price),
-      stock: parseInt(stock),
       description,
-      specs: specsObj,
     };
-
-    // Add shipping category if provided
-    if (shippingCategoryId) {
-      productData.shipping_category_id = shippingCategoryId;
-    }
 
     const { error } = await supabase
       .from('products')
@@ -119,7 +112,7 @@ export default function EditProductPage() {
 
     if (error) {
       console.error('Product update error:', error);
-      alert('Fout bij opslaan: ' + error.message);
+      alert('Fout bij opslaan: ' + error.message + '\n\nControleer database schema.');
       setSaving(false);
     } else {
       alert('Product bijgewerkt!');

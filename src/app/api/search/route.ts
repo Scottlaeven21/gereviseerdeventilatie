@@ -14,17 +14,18 @@ export async function GET(request: NextRequest) {
     // Using ilike for case-insensitive search
     const { data: products, error } = await supabase
       .from('products')
-      .select('id, name, slug, price, category, stock')
+      .select('id, name, slug, price, category')
       .or(
         `name.ilike.%${query}%,description.ilike.%${query}%,category.ilike.%${query}%`
       )
       .limit(10)
       .order('name');
     
-    // Add image_url as null for now (can be added later when column exists)
-    const productsWithImages = (products || []).map(p => ({
+    // Add missing fields as null/defaults (can be added when columns exist)
+    const productsWithDefaults = (products || []).map(p => ({
       ...p,
-      image_url: null
+      image_url: null,
+      stock: 0
     }));
 
     if (error) {
@@ -36,9 +37,9 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      products: productsWithImages,
+      products: productsWithDefaults,
       query,
-      count: productsWithImages.length,
+      count: productsWithDefaults.length,
     });
   } catch (error) {
     console.error('Search error:', error);
