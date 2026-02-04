@@ -120,12 +120,12 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/verzenden" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Link href="/verzending" style={{ color: 'white', textDecoration: 'none' }}>
                     Verzenden
                   </Link>
                 </li>
                 <li>
-                  <Link href="/verzenden" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Link href="/verzending" style={{ color: 'white', textDecoration: 'none' }}>
                     Retourneren
                   </Link>
                 </li>
