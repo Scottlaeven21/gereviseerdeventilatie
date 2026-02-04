@@ -14,17 +14,17 @@ export async function GET(request: NextRequest) {
     // Using ilike for case-insensitive search
     const { data: products, error } = await supabase
       .from('products')
-      .select('*')
+      .select('id, name, slug, price, image_url, category, stock')
       .or(
         `name.ilike.%${query}%,description.ilike.%${query}%,category.ilike.%${query}%`
       )
-      .eq('is_active', true)
+      .limit(10)
       .order('name');
 
     if (error) {
       console.error('Search error:', error);
       return NextResponse.json(
-        { error: 'Search failed' },
+        { error: 'Search failed', details: error.message },
         { status: 500 }
       );
     }
