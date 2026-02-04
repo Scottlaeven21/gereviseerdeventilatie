@@ -7,18 +7,29 @@ import { useAuth, AuthProvider } from '@/contexts/AuthContext';
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { user, isAdmin, loading } = useAuth();
+  const { user, profile, isAdmin, loading } = useAuth();
 
   useEffect(() => {
-    if (!loading && (!user || !isAdmin)) {
+    // Wait for both user AND profile to load before checking
+    if (!loading && user && profile !== null && !isAdmin) {
       router.push('/login');
     }
-  }, [user, isAdmin, loading, router]);
+  }, [user, profile, isAdmin, loading, router]);
 
-  if (loading || !user || !isAdmin) {
+  // Show loading while auth or profile is loading
+  if (loading || !user || profile === null) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
         <div style={{ fontSize: '18px', color: '#64748b' }}>Laden...</div>
+      </div>
+    );
+  }
+
+  // If profile loaded but not admin, redirect
+  if (!isAdmin) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+        <div style={{ fontSize: '18px', color: '#ef4444' }}>Geen toegang - alleen voor admins</div>
       </div>
     );
   }
