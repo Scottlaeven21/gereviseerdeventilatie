@@ -345,7 +345,7 @@ export function Header() {
             {/* Modern Header */}
             <div style={{ 
               padding: '24px 20px', 
-              background: 'linear-gradient(135deg, #1266BD 0%, #29AAE3 100%)',
+              background: '#1266BD',
               boxShadow: '0 4px 12px rgba(18, 102, 189, 0.15)'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

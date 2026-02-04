@@ -34,7 +34,7 @@ export function TopUSPBanner() {
     <div 
       className="lg:hidden"
       style={{ 
-        background: '#f9fafb', 
+        background: '#f8f9fa', 
         borderBottom: '1px solid #e5e7eb',
         padding: '8px 16px',
       }}
