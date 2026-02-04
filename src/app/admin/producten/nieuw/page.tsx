@@ -73,28 +73,36 @@ export default function NewProductPage() {
       console.error('Error parsing specs:', e);
     }
 
-    const productData = {
+    // Build product data with core fields only
+    const productData: Record<string, any> = {
       name,
       slug,
       category,
       price: parseFloat(price),
       stock: parseInt(stock),
       description,
-      specs: specsObj,
-      image_url: imageUrl || null,
+      specs: Object.keys(specsObj).length > 0 ? specsObj : {},
       is_featured: isFeatured,
-      shipping_category_id: shippingCategoryId || null,
     };
+
+    // Add shipping category if selected
+    if (shippingCategoryId) {
+      productData.shipping_category_id = shippingCategoryId;
+    }
+
+    // Note: Image URL field is handled separately via Supabase Storage or manual entry
+    // You can add it later via the products table directly if needed
 
     const { error } = await supabase
       .from('products')
       .insert([productData]);
 
     if (error) {
-      alert('Fout bij opslaan: ' + error.message);
+      console.error('Product insert error:', error);
+      alert('Fout bij opslaan: ' + error.message + '\n\nControleer of alle verplichte velden zijn ingevuld.');
       setSaving(false);
     } else {
-      alert('Product aangemaakt!');
+      alert('Product aangemaakt! Upload een afbeelding via Supabase dashboard indien nodig.');
       router.push('/admin/producten');
     }
   };
