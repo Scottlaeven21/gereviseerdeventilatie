@@ -73,17 +73,29 @@ export default function NewProductPage() {
       console.error('Error parsing specs:', e);
     }
 
-    // Build product data with ABSOLUTE MINIMUM fields
+    // Build product data with correct database schema
     const productData: Record<string, any> = {
       name,
       slug,
       category,
-      price: parseFloat(price),
       description,
+      price: price, // Keep as string
+      regular_price: price,
+      sale_price: price,
+      stock_quantity: parseInt(stock) || 0,
+      stock_status: parseInt(stock) > 0 ? 'instock' : 'outofstock',
+      sku: slug, // Use slug as SKU for now
+      featured: isFeatured,
+      visibility: 'visible',
+      specifications: JSON.stringify(specsObj),
+      images: imageUrl ? JSON.stringify([imageUrl]) : JSON.stringify([]),
+      short_description: description.substring(0, 200), // First 200 chars
     };
 
-    // Only add optional fields if they might exist
-    // Stock, specs, shipping_category_id, etc. can be added later if columns exist
+    // Add shipping category if selected
+    if (shippingCategoryId) {
+      productData.shipping_category_id = shippingCategoryId;
+    }
 
     const { data, error } = await supabase
       .from('products')
@@ -92,18 +104,10 @@ export default function NewProductPage() {
 
     if (error) {
       console.error('Product insert error:', error);
-      alert(
-        'Fout bij opslaan: ' + error.message + 
-        '\n\nDe products tabel mist waarschijnlijk kolommen.' +
-        '\n\nControleer de database schema in Supabase.'
-      );
+      alert('Fout bij opslaan: ' + error.message);
       setSaving(false);
     } else {
-      alert(
-        'Product aangemaakt!' +
-        '\n\nID: ' + (data?.[0]?.id || 'onbekend') +
-        '\n\nVoeg extra velden toe via Supabase dashboard.'
-      );
+      alert('Product succesvol aangemaakt!\n\nID: ' + (data?.[0]?.id || 'onbekend'));
       router.push('/admin/producten');
     }
   };

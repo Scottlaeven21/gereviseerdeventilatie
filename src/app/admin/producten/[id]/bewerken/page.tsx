@@ -96,14 +96,26 @@ export default function EditProductPage() {
       console.error('Error parsing specs:', e);
     }
 
-    // Build product data with ABSOLUTE MINIMUM fields
+    // Build product data with correct database schema
     const productData: Record<string, any> = {
       name,
       slug,
       category,
-      price: parseFloat(price),
       description,
+      price: price,
+      regular_price: price,
+      sale_price: price,
+      stock_quantity: parseInt(stock) || 0,
+      stock_status: parseInt(stock) > 0 ? 'instock' : 'outofstock',
+      featured: isFeatured,
+      specifications: JSON.stringify(specsObj),
+      images: imageUrl ? JSON.stringify([imageUrl]) : JSON.stringify([]),
+      short_description: description.substring(0, 200),
     };
+
+    if (shippingCategoryId) {
+      productData.shipping_category_id = shippingCategoryId;
+    }
 
     const { error } = await supabase
       .from('products')
@@ -112,7 +124,7 @@ export default function EditProductPage() {
 
     if (error) {
       console.error('Product update error:', error);
-      alert('Fout bij opslaan: ' + error.message + '\n\nControleer database schema.');
+      alert('Fout bij opslaan: ' + error.message);
       setSaving(false);
     } else {
       alert('Product bijgewerkt!');
