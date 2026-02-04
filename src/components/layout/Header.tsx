@@ -7,8 +7,10 @@ import { Logo } from '@/components/layout/Logo';
 import { CartIcon } from '@/components/cart/CartIcon';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { TopUSPBanner } from '@/components/layout/TopUSPBanner';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function Header() {
+  const { user } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -152,7 +154,7 @@ export function Header() {
               {/* Right Icons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
                 <Link
-                  href="/account"
+                  href={user ? '/account' : '/login'}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -241,8 +243,8 @@ export function Header() {
 
             {/* Right Icons */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-              <Link href="/account" style={{ color: '#64748b', fontSize: '20px', padding: '4px' }}>
-                <i className="fas fa-user" />
+              <Link href={user ? '/account' : '/login'} style={{ color: user ? '#1266BD' : '#64748b', fontSize: '20px', padding: '4px' }}>
+                <i className={user ? 'fas fa-user-circle' : 'fas fa-user'} />
               </Link>
               <div style={{ marginRight: '-4px' }}>
                 <CartIcon />
