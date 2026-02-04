@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { mainNav } from '@/content/navigation';
 import { Logo } from '@/components/layout/Logo';
@@ -9,6 +9,15 @@ import { CartDrawer } from '@/components/cart/CartDrawer';
 import { TopUSPBanner } from '@/components/layout/TopUSPBanner';
 import { useAuth } from '@/contexts/AuthContext';
 
+interface SearchResult {
+  id: number;
+  name: string;
+  slug: string;
+  price: number;
+  image_url: string | null;
+  category: string;
+}
+
 export function Header() {
   const { user, isAdmin } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,6 +25,13 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showMobileDropdown, setShowMobileDropdown] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   const uspItems = [
     { icon: 'fa-file-invoice', text: 'Gratis offerte op aanvraag' },
@@ -59,11 +75,71 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
+  // Live search with debounce
+  useEffect(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    if (searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    setIsSearching(true);
+    
+    debounceTimer.current = setTimeout(async () => {
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
+        if (response.ok) {
+          const data = await response.json();
+          setSearchResults(data.products || []);
+          setShowDropdown(true);
+        }
+      } catch (error) {
+        console.error('Search error:', error);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300); // 300ms debounce
+
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, [searchQuery]);
+
+  // Click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+      if (mobileSearchRef.current && !mobileSearchRef.current.contains(event.target as Node)) {
+        setShowMobileDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      setShowDropdown(false);
+      setShowMobileDropdown(false);
       window.location.href = `/zoeken?q=${encodeURIComponent(searchQuery)}`;
     }
+  };
+
+  const handleResultClick = (slug: string) => {
+    setShowDropdown(false);
+    setShowMobileDropdown(false);
+    setSearchQuery('');
   };
 
   return (
@@ -127,41 +203,182 @@ export function Header() {
                 <Logo height={50} />
               </Link>
 
-              {/* Search Bar */}
-              <form onSubmit={handleSearch} style={{ flex: 1, maxWidth: '500px' }}>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    type="search"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Typ om te zoeken…"
-                    style={{
-                      width: '100%',
-                      padding: '10px 40px 10px 16px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '4px',
-                      fontSize: '14px',
-                      outline: 'none',
-                    }}
-                  />
-                  <button
-                    type="submit"
+              {/* Search Bar with Dropdown */}
+              <div ref={searchRef} style={{ flex: 1, maxWidth: '500px', position: 'relative' }}>
+                <form onSubmit={handleSearch}>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onFocus={() => searchQuery.trim().length >= 2 && searchResults.length > 0 && setShowDropdown(true)}
+                      placeholder="Zoek producten…"
+                      style={{
+                        width: '100%',
+                        padding: '10px 40px 10px 16px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        outline: 'none',
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      style={{
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#9ca3af',
+                      }}
+                      aria-label="Zoeken"
+                    >
+                      {isSearching ? (
+                        <i className="fas fa-spinner fa-spin" />
+                      ) : (
+                        <i className="fas fa-search" />
+                      )}
+                    </button>
+                  </div>
+                </form>
+
+                {/* Search Results Dropdown */}
+                {showDropdown && (
+                  <div
                     style={{
                       position: 'absolute',
-                      right: '12px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#9ca3af',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      marginTop: '4px',
+                      background: 'white',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                      maxHeight: '400px',
+                      overflowY: 'auto',
+                      zIndex: 100,
                     }}
-                    aria-label="Zoeken"
                   >
-                    <i className="fas fa-search" />
-                  </button>
-                </div>
-              </form>
+                    {searchResults.length > 0 ? (
+                      <>
+                        {searchResults.map((product) => (
+                          <Link
+                            key={product.id}
+                            href={`/product/${product.slug}`}
+                            onClick={() => handleResultClick(product.slug)}
+                            style={{
+                              display: 'flex',
+                              gap: '12px',
+                              padding: '12px',
+                              textDecoration: 'none',
+                              color: 'inherit',
+                              borderBottom: '1px solid #f3f4f6',
+                              transition: 'background 0.2s',
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = '#f9fafb'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
+                          >
+                            {/* Product Image */}
+                            <div
+                              style={{
+                                width: '60px',
+                                height: '60px',
+                                flexShrink: 0,
+                                background: '#f3f4f6',
+                                borderRadius: '6px',
+                                overflow: 'hidden',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              {product.image_url ? (
+                                <img
+                                  src={product.image_url}
+                                  alt={product.name}
+                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                              ) : (
+                                <i className="fas fa-image" style={{ fontSize: '24px', color: '#9ca3af' }} />
+                              )}
+                            </div>
+
+                            {/* Product Info */}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div
+                                style={{
+                                  fontSize: '14px',
+                                  fontWeight: '600',
+                                  color: '#1e293b',
+                                  marginBottom: '4px',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
+                                {product.name}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>
+                                {product.category}
+                              </div>
+                              <div style={{ fontSize: '14px', fontWeight: '700', color: '#1266BD' }}>
+                                €{product.price.toFixed(2)}
+                              </div>
+                            </div>
+
+                            {/* Arrow Icon */}
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                color: '#9ca3af',
+                              }}
+                            >
+                              <i className="fas fa-chevron-right" style={{ fontSize: '12px' }} />
+                            </div>
+                          </Link>
+                        ))}
+
+                        {/* View All Results */}
+                        <Link
+                          href={`/zoeken?q=${encodeURIComponent(searchQuery)}`}
+                          onClick={() => setShowDropdown(false)}
+                          style={{
+                            display: 'block',
+                            padding: '12px',
+                            textAlign: 'center',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            color: '#1266BD',
+                            textDecoration: 'none',
+                            background: '#f8f9fa',
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = '#e5e7eb'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = '#f8f9fa'}
+                        >
+                          Bekijk alle {searchResults.length} resultaten →
+                        </Link>
+                      </>
+                    ) : (
+                      <div
+                        style={{
+                          padding: '24px',
+                          textAlign: 'center',
+                          color: '#64748b',
+                          fontSize: '14px',
+                        }}
+                      >
+                        <i className="fas fa-search" style={{ fontSize: '32px', marginBottom: '12px', opacity: 0.5 }} />
+                        <div>Geen resultaten gevonden voor "{searchQuery}"</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
               {/* Right Icons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
@@ -265,24 +482,27 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mobile Search Bar - Hides on scroll */}
+        {/* Mobile Search Bar - Hides on scroll with Dropdown */}
         <div
+          ref={mobileSearchRef}
           style={{
             background: 'white',
             padding: showSearch ? '12px 16px' : '0 16px',
-            maxHeight: showSearch ? '60px' : '0',
-            overflow: 'hidden',
+            maxHeight: showSearch ? (showMobileDropdown ? '500px' : '60px') : '0',
+            overflow: showSearch ? 'visible' : 'hidden',
             transition: 'all 0.3s ease-in-out',
             borderBottom: showSearch ? '1px solid #e5e7eb' : 'none',
+            position: 'relative',
           }}
         >
           <form onSubmit={handleSearch}>
             <div style={{ position: 'relative' }}>
               <input
-                type="search"
+                type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Typ om te zoeken..."
+                onFocus={() => searchQuery.trim().length >= 2 && searchResults.length > 0 && setShowMobileDropdown(true)}
+                placeholder="Zoek producten..."
                 style={{
                   width: '100%',
                   padding: '10px 40px 10px 16px',
@@ -306,10 +526,146 @@ export function Header() {
                 }}
                 aria-label="Zoeken"
               >
-                <i className="fas fa-search" />
+                {isSearching ? (
+                  <i className="fas fa-spinner fa-spin" />
+                ) : (
+                  <i className="fas fa-search" />
+                )}
               </button>
             </div>
           </form>
+
+          {/* Mobile Search Results Dropdown */}
+          {showMobileDropdown && showSearch && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '100%',
+                left: '16px',
+                right: '16px',
+                marginTop: '8px',
+                background: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                maxHeight: '400px',
+                overflowY: 'auto',
+                zIndex: 100,
+              }}
+            >
+              {searchResults.length > 0 ? (
+                <>
+                  {searchResults.map((product) => (
+                    <Link
+                      key={product.id}
+                      href={`/product/${product.slug}`}
+                      onClick={() => handleResultClick(product.slug)}
+                      style={{
+                        display: 'flex',
+                        gap: '12px',
+                        padding: '12px',
+                        textDecoration: 'none',
+                        color: 'inherit',
+                        borderBottom: '1px solid #f3f4f6',
+                      }}
+                    >
+                      {/* Product Image */}
+                      <div
+                        style={{
+                          width: '60px',
+                          height: '60px',
+                          flexShrink: 0,
+                          background: '#f3f4f6',
+                          borderRadius: '6px',
+                          overflow: 'hidden',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        {product.image_url ? (
+                          <img
+                            src={product.image_url}
+                            alt={product.name}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        ) : (
+                          <i className="fas fa-image" style={{ fontSize: '24px', color: '#9ca3af' }} />
+                        )}
+                      </div>
+
+                      {/* Product Info */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            color: '#1e293b',
+                            marginBottom: '4px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {product.name}
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>
+                          {product.category}
+                        </div>
+                        <div style={{ fontSize: '14px', fontWeight: '700', color: '#1266BD' }}>
+                          €{product.price.toFixed(2)}
+                        </div>
+                      </div>
+
+                      {/* Arrow Icon */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          color: '#9ca3af',
+                        }}
+                      >
+                        <i className="fas fa-chevron-right" style={{ fontSize: '12px' }} />
+                      </div>
+                    </Link>
+                  ))}
+
+                  {/* View All Results */}
+                  <Link
+                    href={`/zoeken?q=${encodeURIComponent(searchQuery)}`}
+                    onClick={() => {
+                      setShowMobileDropdown(false);
+                      setSearchQuery('');
+                    }}
+                    style={{
+                      display: 'block',
+                      padding: '12px',
+                      textAlign: 'center',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#1266BD',
+                      textDecoration: 'none',
+                      background: '#f8f9fa',
+                    }}
+                  >
+                    Bekijk alle {searchResults.length} resultaten →
+                  </Link>
+                </>
+              ) : (
+                <div
+                  style={{
+                    padding: '24px',
+                    textAlign: 'center',
+                    color: '#64748b',
+                    fontSize: '14px',
+                  }}
+                >
+                  <i className="fas fa-search" style={{ fontSize: '32px', marginBottom: '12px', opacity: 0.5 }} />
+                  <div>Geen resultaten voor "{searchQuery}"</div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu Drawer - Modern with Smooth Animation */}
