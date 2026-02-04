@@ -175,7 +175,7 @@ export default function ShippingCategoriesPage() {
             {editingId ? 'Verzendcategorie Bewerken' : 'Nieuwe Verzendcategorie'}
           </h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginBottom: '16px' }}>
+          <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginBottom: '16px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#64748b', marginBottom: '8px' }}>
                 NAAM *
@@ -280,7 +280,7 @@ export default function ShippingCategoriesPage() {
       )}
 
       {/* Categories Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '24px' }}>
         {categories.map((category) => (
           <div
             key={category.id}
@@ -372,6 +372,15 @@ export default function ShippingCategoriesPage() {
           </div>
         </div>
       )}
+
+      {/* Mobile Styles */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .form-grid-2 {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

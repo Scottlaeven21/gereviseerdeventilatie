@@ -436,6 +436,15 @@ export default function DiscountCodesPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Mobile Styles */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .form-grid-3 {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
