@@ -96,7 +96,8 @@ export default function EditProductPage() {
       console.error('Error parsing specs:', e);
     }
 
-    const productData = {
+    // Build product data with only existing columns
+    const productData: Record<string, any> = {
       name,
       slug,
       category,
@@ -104,10 +105,12 @@ export default function EditProductPage() {
       stock: parseInt(stock),
       description,
       specs: specsObj,
-      image_url: imageUrl || null,
-      is_featured: isFeatured,
-      shipping_category_id: shippingCategoryId || null,
     };
+
+    // Add shipping category if provided
+    if (shippingCategoryId) {
+      productData.shipping_category_id = shippingCategoryId;
+    }
 
     const { error } = await supabase
       .from('products')
@@ -115,6 +118,7 @@ export default function EditProductPage() {
       .eq('id', productId);
 
     if (error) {
+      console.error('Product update error:', error);
       alert('Fout bij opslaan: ' + error.message);
       setSaving(false);
     } else {
