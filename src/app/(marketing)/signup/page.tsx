@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function SignupPage() {
   const router = useRouter();
-  const { signUp, user } = useAuth();
+  const { signUp, user, loading: authLoading } = useAuth();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,8 +17,13 @@ export default function SignupPage() {
   const [success, setSuccess] = useState(false);
 
   // Redirect if already logged in
-  if (user && !success) {
-    router.push('/account');
+  useEffect(() => {
+    if (!authLoading && user && !success) {
+      router.push('/account');
+    }
+  }, [user, authLoading, success, router]);
+
+  if (authLoading) {
     return null;
   }
 

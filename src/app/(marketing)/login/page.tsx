@@ -1,21 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn, user } = useAuth();
+  const { signIn, user, loading: authLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Redirect if already logged in
-  if (user) {
-    router.push('/account');
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.push('/account');
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading) {
     return null;
   }
 
