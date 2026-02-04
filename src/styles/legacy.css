@@ -440,6 +440,12 @@
     gap: 12px !important;
   }
   
+  /* Featured Products Section - Override 4 columns to 2 columns on mobile */
+  .featured-section-mobile .products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  
   .product-card-image {
     height: 140px !important;
   }

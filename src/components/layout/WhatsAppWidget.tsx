@@ -21,8 +21,8 @@ export function WhatsAppWidget() {
         cursor: 'pointer',
         zIndex: 9999,
         transition: 'all 0.3s ease',
-        animation: 'pulse 2s infinite',
       }}
+      className="whatsapp-widget"
       onMouseOver={(e) => {
         e.currentTarget.style.transform = 'scale(1.1)';
         e.currentTarget.style.boxShadow = '0 6px 20px rgba(37, 211, 102, 0.6)';
@@ -49,17 +49,6 @@ export function WhatsAppWidget() {
           fill="#25D366"
         />
       </svg>
-
-      <style jsx>{`
-        @keyframes pulse {
-          0%, 100% {
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-          }
-          50% {
-            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.7);
-          }
-        }
-      `}</style>
     </a>
   );
 }
