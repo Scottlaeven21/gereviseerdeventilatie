@@ -156,7 +156,7 @@ export default function OrderDetailPage() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+      <div className="order-details-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
         {/* Left Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {/* Order Items */}
@@ -524,6 +524,15 @@ export default function OrderDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Styles */}
+      <style jsx>{`
+        @media (max-width: 968px) {
+          .order-details-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -76,7 +76,7 @@ export default function AccountPage() {
           Mijn Account
         </h1>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '32px' }}>
+        <div className="account-grid" style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '32px' }}>
           {/* Sidebar */}
           <div>
             <div
@@ -293,6 +293,16 @@ export default function AccountPage() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Styles */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .account-grid {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

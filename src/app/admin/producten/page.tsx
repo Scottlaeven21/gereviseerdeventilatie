@@ -136,7 +136,7 @@ export default function ProductsPage() {
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
+        <div className="filters-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
           {/* Search */}
           <input
             type="text"
@@ -325,6 +325,15 @@ export default function ProductsPage() {
           ))}
         </div>
       )}
+
+      {/* Mobile Styles */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .filters-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

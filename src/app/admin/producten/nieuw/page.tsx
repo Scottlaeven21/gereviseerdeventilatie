@@ -128,7 +128,7 @@ export default function NewProductPage() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+        <div className="product-form-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
           {/* Left Column */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {/* Basic Info */}
@@ -491,6 +491,15 @@ export default function NewProductPage() {
           </div>
         </div>
       </form>
+
+      {/* Mobile Styles */}
+      <style jsx>{`
+        @media (max-width: 968px) {
+          .product-form-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

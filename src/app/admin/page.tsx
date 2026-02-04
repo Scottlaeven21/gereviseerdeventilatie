@@ -128,7 +128,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '32px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', marginBottom: '32px' }}>
         <StatCard
           icon="fa-euro-sign"
           label="Vandaag Omzet"
@@ -156,7 +156,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Revenue Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: '32px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', marginBottom: '32px' }}>
         <RevenueCard period="Week" revenue={stats.weekRevenue} orders={stats.weekOrders} />
         <RevenueCard period="Maand" revenue={stats.monthRevenue} orders={stats.monthOrders} />
         <RevenueCard period="Totaal" revenue={stats.totalRevenue} orders={stats.totalOrders} />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth, AuthProvider } from '@/contexts/AuthContext';
@@ -8,6 +8,7 @@ import { useAuth, AuthProvider } from '@/contexts/AuthContext';
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { user, profile, isAdmin, loading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     // Wait for both user AND profile to load before checking
@@ -36,6 +37,55 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#f8f9fa' }}>
+      {/* Mobile Header */}
+      <div
+        style={{
+          display: 'none',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '60px',
+          background: '#1e293b',
+          alignItems: 'center',
+          padding: '0 16px',
+          zIndex: 1000,
+        }}
+        className="mobile-header"
+      >
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'white',
+            fontSize: '24px',
+            cursor: 'pointer',
+            padding: '8px',
+          }}
+        >
+          <i className={sidebarOpen ? 'fas fa-times' : 'fas fa-bars'} />
+        </button>
+        <span style={{ fontSize: '18px', fontWeight: '700', color: 'white', marginLeft: '12px' }}>
+          Admin
+        </span>
+      </div>
+
+      {/* Sidebar Overlay (mobile) */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          style={{
+            display: 'none',
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            zIndex: 999,
+          }}
+          className="sidebar-overlay"
+        />
+      )}
+
       {/* Sidebar */}
       <aside
         style={{
@@ -48,7 +98,10 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           position: 'fixed',
           height: '100vh',
           overflowY: 'auto',
+          zIndex: 1000,
+          transition: 'transform 0.3s ease',
         }}
+        className={sidebarOpen ? 'sidebar-open' : 'sidebar'}
       >
         {/* Logo */}
         <Link
@@ -107,9 +160,41 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Content */}
-      <main style={{ marginLeft: '280px', flex: 1, padding: '32px' }}>
+      <main style={{ marginLeft: '280px', flex: 1, padding: '32px' }} className="admin-main">
         {children}
       </main>
+
+      {/* Mobile Styles */}
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .mobile-header {
+            display: flex !important;
+          }
+          
+          .sidebar-overlay {
+            display: block !important;
+          }
+          
+          .sidebar {
+            transform: translateX(-100%);
+          }
+          
+          .sidebar-open {
+            transform: translateX(0);
+          }
+          
+          .admin-main {
+            margin-left: 0 !important;
+            padding: 76px 16px 16px 16px !important;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .admin-main {
+            padding: 76px 12px 12px 12px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
