@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,7 +36,20 @@ export default function LoginPage() {
       setError('Ongeldige inloggegevens. Probeer het opnieuw.');
       setLoading(false);
     } else {
-      router.push('/account');
+      // Wait a bit for profile to load, then check if admin
+      setTimeout(async () => {
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('role')
+          .eq('id', (await supabase.auth.getUser()).data.user?.id)
+          .single();
+
+        if (profile?.role === 'admin') {
+          router.push('/admin');
+        } else {
+          router.push('/account');
+        }
+      }, 500);
     }
   };
 

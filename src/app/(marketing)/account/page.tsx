@@ -18,7 +18,7 @@ interface Order {
 
 export default function AccountPage() {
   const router = useRouter();
-  const { user, signOut, loading: authLoading } = useAuth();
+  const { user, profile, isAdmin, signOut, loading: authLoading } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
 
@@ -28,6 +28,13 @@ export default function AccountPage() {
       router.push('/login');
     }
   }, [user, authLoading, router]);
+
+  // Redirect admins to admin dashboard
+  useEffect(() => {
+    if (!authLoading && profile && isAdmin) {
+      router.push('/admin');
+    }
+  }, [profile, isAdmin, authLoading, router]);
 
   // Load user orders
   useEffect(() => {

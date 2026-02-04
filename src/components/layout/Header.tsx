@@ -10,7 +10,7 @@ import { TopUSPBanner } from '@/components/layout/TopUSPBanner';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function Header() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -154,7 +154,7 @@ export function Header() {
               {/* Right Icons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
                 <Link
-                  href={user ? '/account' : '/login'}
+                  href={user ? (isAdmin ? '/admin' : '/account') : '/login'}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -243,7 +243,7 @@ export function Header() {
 
             {/* Right Icons */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-              <Link href={user ? '/account' : '/login'} style={{ color: user ? '#1266BD' : '#64748b', fontSize: '20px', padding: '4px' }}>
+              <Link href={user ? (isAdmin ? '/admin' : '/account') : '/login'} style={{ color: user ? '#1266BD' : '#64748b', fontSize: '20px', padding: '4px' }}>
                 <i className={user ? 'fas fa-user-circle' : 'fas fa-user'} />
               </Link>
               <div style={{ marginRight: '-4px' }}>
