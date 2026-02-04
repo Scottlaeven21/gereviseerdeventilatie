@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { products } from '@/data/mockProducts';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { ProductFilters } from '@/components/product/ProductFilters';
 import { ProductSort } from '@/components/product/ProductSort';
@@ -11,25 +10,50 @@ import type { Product } from '@/types/product';
 function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<string>('all');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('relevance');
+  const [loading, setLoading] = useState(true);
 
+  // Fetch search results from API
   useEffect(() => {
-    let results = products;
+    const fetchResults = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        
+        // Map database products to Product type
+        const mappedProducts: Product[] = (data.products || []).map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          category: p.category,
+          price: p.price,
+          description: p.description,
+          imageUrl: p.image_url,
+          inStock: p.stock > 0,
+          specs: p.specs || {},
+          isFeatured: p.is_featured,
+        }));
+        
+        setAllProducts(mappedProducts);
+      } catch (error) {
+        console.error('Search failed:', error);
+        setAllProducts([]);
+      }
+      setLoading(false);
+    };
 
-    // Search filter
-    if (query) {
-      const searchLower = query.toLowerCase();
-      results = results.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchLower) ||
-          product.description.toLowerCase().includes(searchLower) ||
-          product.category.toLowerCase().includes(searchLower)
-      );
-    }
+    fetchResults();
+  }, [query]);
+
+  // Apply filters and sorting
+  useEffect(() => {
+    let results = [...allProducts];
 
     // Category filter
     if (selectedCategory !== 'all') {
@@ -83,7 +107,18 @@ function SearchContent() {
     }
 
     setFilteredProducts(results);
-  }, [query, selectedCategory, selectedBrand, priceRange, sortBy]);
+  }, [allProducts, selectedCategory, selectedBrand, priceRange, sortBy]);
+
+  if (loading) {
+    return (
+      <div style={{ background: '#f8f9fa', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <i className="fas fa-spinner fa-spin" style={{ fontSize: '48px', color: '#1266BD', marginBottom: '16px' }} />
+          <p style={{ fontSize: '18px', color: '#64748b' }}>Zoeken...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ background: '#f8f9fa', minHeight: '100vh', paddingTop: '40px', paddingBottom: '80px' }}>

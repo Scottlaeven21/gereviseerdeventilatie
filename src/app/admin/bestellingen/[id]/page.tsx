@@ -81,8 +81,20 @@ export default function OrderDetailPage() {
       .eq('id', orderId);
 
     if (!error) {
-      // TODO: Send email to customer if sendEmail is true
-      // For now, we'll implement this later with Resend
+      // Send email if enabled and status is shipped with tracking code
+      if (sendEmail && orderStatus === 'shipped' && trackingCode) {
+        try {
+          await fetch('/api/emails/shipping-notification', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId }),
+          });
+        } catch (emailError) {
+          console.error('Failed to send email:', emailError);
+          // Don't block the update if email fails
+        }
+      }
+      
       alert('Bestelling bijgewerkt!');
       loadOrder();
     } else {

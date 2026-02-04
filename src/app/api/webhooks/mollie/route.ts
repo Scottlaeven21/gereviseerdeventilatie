@@ -25,18 +25,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid metadata' }, { status: 400 });
     }
 
-    const orderId = metadata.orderId;
+    const orderNumber = metadata.orderId;
     const status = payment.status;
+
+    // First get the order to retrieve its database ID
+    const { data: order, error: fetchError } = await supabase
+      .from('orders')
+      .select('id')
+      .eq('order_number', orderNumber)
+      .single();
+
+    if (fetchError || !order) {
+      console.error('Order not found:', fetchError);
+      return NextResponse.json(
+        { error: 'Order not found' },
+        { status: 404 }
+      );
+    }
 
     // Update order status in database
     const { error } = await supabase
       .from('orders')
       .update({
         payment_status: status,
-        order_status: status === 'paid' ? 'completed' : 'processing',
+        order_status: status === 'paid' ? 'processing' : 'pending',
         updated_at: new Date().toISOString(),
       })
-      .eq('order_number', orderId);
+      .eq('order_number', orderNumber);
 
     if (error) {
       console.error('Database update error:', error);
@@ -46,12 +61,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`Order ${orderId} updated to status: ${status}`);
+    console.log(`Order ${orderNumber} updated to status: ${status}`);
 
-    // Here you could send confirmation emails for 'paid' status
+    // Send confirmation email for paid orders
     if (status === 'paid') {
-      // TODO: Send order confirmation email
-      console.log(`Order ${orderId} is PAID - send confirmation email`);
+      try {
+        await fetch(`${request.nextUrl.origin}/api/emails/order-confirmation`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: order.id }),
+        });
+        console.log(`Order confirmation email sent for ${orderNumber}`);
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+        // Don't fail the webhook if email fails
+      }
     }
 
     return NextResponse.json({ success: true });
