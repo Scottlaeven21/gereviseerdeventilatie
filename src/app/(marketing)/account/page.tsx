@@ -73,6 +73,7 @@ export default function AccountPage() {
     <div style={{ background: '#f8f9fa', minHeight: '100vh', paddingTop: '40px', paddingBottom: '80px' }}>
       <div className="container-boxed">
         <h1
+          className="account-title"
           style={{
             fontSize: '32px',
             fontWeight: '700',
@@ -302,11 +303,23 @@ export default function AccountPage() {
       </div>
 
       {/* Mobile Styles */}
-      <style jsx>{`
+      <style jsx global>{`
         @media (max-width: 768px) {
           .account-grid {
             grid-template-columns: 1fr !important;
-            gap: 24px !important;
+            gap: 20px !important;
+          }
+
+          .account-title {
+            font-size: 24px !important;
+            margin-bottom: 24px !important;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .account-title {
+            font-size: 22px !important;
+            margin-bottom: 20px !important;
           }
         }
       `}</style>
