@@ -35,13 +35,15 @@ export function CartDrawer() {
         />
       )}
 
-      {/* Drawer */}
+      {/* Drawer - Responsive width */}
       <div
+        className="cart-drawer"
         style={{
           position: 'fixed',
           top: 0,
-          right: isCartOpen ? 0 : '-450px',
-          width: '450px',
+          right: isCartOpen ? 0 : '-100%',
+          width: '100%',
+          maxWidth: '450px',
           height: '100vh',
           background: '#f8f9fa',
           zIndex: 9999,
@@ -51,6 +53,13 @@ export function CartDrawer() {
           boxShadow: isCartOpen ? '-4px 0 24px rgba(0,0,0,0.15)' : 'none',
         }}
       >
+        <style jsx>{`
+          @media (max-width: 768px) {
+            .cart-drawer {
+              max-width: 90% !important;
+            }
+          }
+        `}</style>
         {/* Header */}
         <div
           style={{

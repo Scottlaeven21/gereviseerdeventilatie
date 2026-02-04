@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const cards = [
   {
@@ -19,6 +19,49 @@ const cards = [
 
 export function InfoCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const touchThreshold = 50; // Minimum swipe distance
+
+  // Autoplay
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % cards.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Touch handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > touchThreshold;
+    const isRightSwipe = distance < -touchThreshold;
+
+    if (isLeftSwipe) {
+      // Swipe left - next slide
+      setActiveIndex((prev) => (prev + 1) % cards.length);
+    }
+    
+    if (isRightSwipe) {
+      // Swipe right - previous slide
+      setActiveIndex((prev) => (prev - 1 + cards.length) % cards.length);
+    }
+
+    // Reset
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
 
   return (
     <section className="info-carousel-section" style={{ padding: '48px 0', background: 'white' }}>
@@ -41,14 +84,19 @@ export function InfoCarousel() {
           ))}
         </div>
 
-        {/* Mobile: Carousel */}
+        {/* Mobile: Carousel with Swipe Support */}
         <div className="lg:hidden">
-          <div style={{ overflow: 'hidden' }}>
+          <div 
+            style={{ overflow: 'hidden', cursor: 'grab' }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <div
               style={{
                 display: 'flex',
                 transform: `translateX(-${activeIndex * 100}%)`,
-                transition: 'transform 0.5s ease-out'
+                transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
               }}
             >
               {cards.map((card, index) => (

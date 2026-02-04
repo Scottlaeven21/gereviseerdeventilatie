@@ -54,9 +54,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ background: '#f8f9fa', minHeight: '100vh', paddingTop: '80px', paddingBottom: '80px' }}>
+    <div className="login-container" style={{ background: '#f8f9fa', minHeight: '100vh', paddingTop: '80px', paddingBottom: '80px' }}>
       <div className="container-boxed">
         <div
+          className="login-card"
           style={{
             maxWidth: '480px',
             margin: '0 auto',
@@ -66,6 +67,17 @@ export default function LoginPage() {
             boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
           }}
         >
+        <style jsx>{`
+          @media (max-width: 768px) {
+            .login-container {
+              padding-top: 24px !important;
+              padding-bottom: 40px !important;
+            }
+            .login-card {
+              padding: 32px 24px !important;
+            }
+          }
+        `}</style>
           {/* Title */}
           <h1
             style={{

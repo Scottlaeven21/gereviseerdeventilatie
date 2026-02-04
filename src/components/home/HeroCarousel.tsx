@@ -97,6 +97,7 @@ export function HeroCarousel() {
                 }}
               >
                 <h2
+                  className="hero-title"
                   style={{
                     fontSize: '40px',
                     fontWeight: '700',
@@ -108,6 +109,13 @@ export function HeroCarousel() {
                 >
                   {slide.title}
                 </h2>
+                <style jsx>{`
+                  @media (max-width: 640px) {
+                    .hero-title {
+                      font-size: 28px !important;
+                    }
+                  }
+                `}</style>
                 <Link
                   href={slide.link}
                   style={{

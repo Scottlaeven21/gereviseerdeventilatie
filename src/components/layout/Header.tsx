@@ -75,9 +75,21 @@ export function Header() {
         width: '100%',
         background: 'white',
         boxShadow: isScrolled ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : 'none',
-        transition: 'box-shadow 0.2s'
+        transition: 'box-shadow 0.2s',
+        // iPhone notch fix - gray background for safe area
+        paddingTop: 'env(safe-area-inset-top)',
       }}
     >
+      {/* Safe area background for iPhone notch - same gray as USP banner */}
+      <div style={{ 
+        position: 'fixed', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        height: 'env(safe-area-inset-top)', 
+        background: '#f8f9fa',
+        zIndex: 51 
+      }} />
       {/* Top USP Banner - Mobile Only */}
       <TopUSPBanner />
 
@@ -300,74 +312,129 @@ export function Header() {
           </form>
         </div>
 
-        {/* Mobile Menu Drawer */}
-        {mobileMenuOpen && (
+        {/* Mobile Menu Drawer - Modern with Smooth Animation */}
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: mobileMenuOpen ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0)',
+            zIndex: 9998,
+            pointerEvents: mobileMenuOpen ? 'auto' : 'none',
+            transition: 'background 0.3s ease-in-out',
+          }}
+          onClick={() => setMobileMenuOpen(false)}
+        >
           <div
             style={{
               position: 'fixed',
               top: 0,
-              left: 0,
-              right: 0,
+              left: mobileMenuOpen ? 0 : '-100%',
               bottom: 0,
-              background: 'rgba(0,0,0,0.5)',
-              zIndex: 9998,
+              width: '85%',
+              maxWidth: '320px',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+              overflowY: 'auto',
+              boxShadow: mobileMenuOpen ? '4px 0 24px rgba(0,0,0,0.15)' : 'none',
+              transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                bottom: 0,
-                width: '280px',
-                background: 'white',
-                padding: '20px',
-                overflowY: 'auto',
-                boxShadow: '2px 0 8px rgba(0,0,0,0.1)',
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1266BD', margin: 0 }}>Menu</h3>
+            {/* Modern Header */}
+            <div style={{ 
+              padding: '24px 20px', 
+              background: 'linear-gradient(135deg, #1266BD 0%, #29AAE3 100%)',
+              boxShadow: '0 4px 12px rgba(18, 102, 189, 0.15)'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'white', margin: '0 0 4px 0' }}>
+                    Menu
+                  </h3>
+                  <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', margin: 0 }}>
+                    Navigeer door de site
+                  </p>
+                </div>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   style={{
-                    background: 'none',
+                    background: 'rgba(255,255,255,0.2)',
                     border: 'none',
-                    color: '#64748b',
-                    fontSize: '24px',
+                    borderRadius: '8px',
+                    color: 'white',
+                    fontSize: '20px',
                     cursor: 'pointer',
+                    width: '40px',
+                    height: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'background 0.2s',
                   }}
+                  onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
                 >
                   <i className="fas fa-times" />
                 </button>
               </div>
-
-              {/* Menu Items */}
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-                {mainNav.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    style={{
-                      color: '#1e293b',
-                      textDecoration: 'none',
-                      fontSize: '16px',
-                      fontWeight: '500',
-                      padding: '14px 0',
-                      borderBottom: '1px solid #f1f5f9',
-                      display: 'block',
-                    }}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
             </div>
+
+            {/* Menu Items - Modern Cards */}
+            <nav style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {mainNav.map((item, index) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  style={{
+                    color: '#1e293b',
+                    textDecoration: 'none',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    padding: '16px',
+                    background: 'white',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                    border: '1px solid #f1f5f9',
+                    transition: 'all 0.2s',
+                    animation: `slideIn 0.3s ease-out ${index * 0.05}s backwards`,
+                  }}
+                  onClick={() => setMobileMenuOpen(false)}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'translateX(4px)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(18, 102, 189, 0.15)';
+                    e.currentTarget.style.borderColor = '#1266BD';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'translateX(0)';
+                    e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+                    e.currentTarget.style.borderColor = '#f1f5f9';
+                  }}
+                >
+                  <span>{item.label}</span>
+                  <i className="fas fa-chevron-right" style={{ fontSize: '12px', color: '#94a3b8' }} />
+                </Link>
+              ))}
+            </nav>
           </div>
-        )}
+        </div>
+        
+        <style jsx global>{`
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateX(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+        `}</style>
 
         {/* Mobile USP Banner - Hidden */}
         {/* <div style={{ background: '#f9fafb', padding: '8px 16px', borderBottom: '1px solid #e5e7eb' }}>
